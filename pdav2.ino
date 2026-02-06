@@ -5,7 +5,10 @@
 #include "fonts_LTSM/FontGroTesk_LTSM.hpp"
 #include <SPI.h>
 #include "encoder.h"
+#include "display16_graphics_LTSM.hpp"
 
+#define LCD_WIDTH 320   // Screen width in pixels
+#define LCD_HEIGHT 240  // Screen height in pixels
 
 ILI9341_LTSM lcd_display;
 bool bhardwareSPI = true;  // true for hardware spi, false for software
@@ -26,12 +29,10 @@ void setup(void) {
   lcd_display.SetupGPIO_SPI(TFT_SCLK_FREQ, RST_TFT, DC_TFT, CS_TFT);
   // ===
   // === USER OPTION 2 Screen Setup ===
-  uint16_t TFT_WIDTH = 240;   // Screen width in pixels
-  uint16_t TFT_HEIGHT = 320;  // Screen height in pixels
-  lcd_display.SetupScreenSize(TFT_WIDTH, TFT_HEIGHT);
-  lcd_display.setFont(FontGroTesk);
-  // ===
   lcd_display.ILI9341Initialize();
+  lcd_display.SetupScreenSize(LCD_HEIGHT,LCD_WIDTH);
+  lcd_display.setFont(FontGroTesk);
+  lcd_display.setRotation(display16_graphics_LTSM::Degrees_90);
   Serial.println("Start");
   delay(1000);
 }
@@ -45,7 +46,7 @@ void loop(void) {
     if (direction != 0) {
       selection_index += direction;
       Serial.println(direction);
-      lcd_display.fillRect(0, 0, 240, 50, lcd_display.C_BLUE);
+      lcd_display.fillRect(0, 0, LCD_WIDTH, 60, lcd_display.C_BLUE);
       lcd_display.setTextColor(lcd_display.C_WHITE, lcd_display.C_BLACK);
       lcd_display.setCursor(0, 15);
       lcd_display.print(String(selection_index));
