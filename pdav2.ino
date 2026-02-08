@@ -28,13 +28,12 @@ void setup(void) {
   //====== sd card initialisation ======
   uint8_t sd_cs = 10;
   int sd_ready = !SD.begin(sd_cs, *vspi);
-  File settings_file = SD.open("config", FILE_WRITE);
+  File settings_file = SD.open("/config", FILE_WRITE);
   if (settings_file) {
-    settings_file.println("pluh");
-    Serial.println("sd card written to");
+    size_t result = settings_file.println("pluh");
+    Serial.printf("%lu bytes written\n",result);
     settings_file.close();
   }
-  Serial.println("sd file open fail");
   //====== lcd initialisation ======
   // === USER OPTION 1 SPI_SPEED + TYPE ===
   int8_t DC_TFT = 3;
