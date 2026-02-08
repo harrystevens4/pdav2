@@ -64,8 +64,15 @@ void setup(void) {
 
 // MAIN loop
 void loop(void) {
-  const char *main_menu[] = {"calendar","settings","ble","wifi"};
-  display_option_menu(main_menu,sizeof(main_menu)/sizeof(char *),"Main menu");
+	const char *main_menu[] = {"calendar","settings","ble","wifi"};
+	int selection = display_option_menu(main_menu,sizeof(main_menu)/sizeof(char *),"Main menu");
+	if (selection == 0){
+		lcd_display.fillScreen(lcd_display.C_BLACK);
+		lcd_display.setTextColor(0xffff, lcd_display.C_BLACK);
+		lcd_display.setCursor(5,5);
+		lcd_display.print("Calendar");
+		delay(1000);
+	}
 }
 
 int display_option_menu(const char **options, size_t option_count, const char *title){
@@ -73,6 +80,7 @@ int display_option_menu(const char **options, size_t option_count, const char *t
 	const int font_width = 16;
 	const int line_spacing = 5;
 	//====== print title ======
+	lcd_display.fillScreen(lcd_display.C_BLACK);
 	lcd_display.setTextColor(0xffff, lcd_display.C_BLACK);
 	lcd_display.setCursor(5,5);
 	lcd_display.print(title);
@@ -100,6 +108,8 @@ int display_option_menu(const char **options, size_t option_count, const char *t
 		lcd_display.print(">");
 		//====== await user input ======
 	 	do {
+			int button = dial1.get_button();
+			if (button) return selection_index;
 			int direction = dial1.get_direction();
 			if (direction != 0){
 				selection_index += direction;
