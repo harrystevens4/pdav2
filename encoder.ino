@@ -10,22 +10,26 @@ RotaryEncoder::RotaryEncoder(int clk, int sw, int dt) {
 
 }
 int RotaryEncoder::get_direction() {
-  static int prev_state = 0;
+  static int prev_direction = 0;
+  static int prev_state = 0; //00 for none on 01 for clk 10 for dt 11 for both
   int dt = !digitalRead(this->dt);
-  if (dt == 0){
-    prev_state = 0;
-    return 0;
-  }
   int clk = !digitalRead(this->clk);
   //only return the direction once
-  if (prev_state != 0) return 0;
-  if (clk && dt) {
-    prev_state = 1;
+  int no_change = (prev_direction != 0);
+  //set new previous state
+  int prev_dt = (prev_state & 2) >> 1;
+  int prev_clk = prev_state & 1;
+  prev_state = 0;
+  prev_state |= dt << 1;
+  prev_state |= clk;
+  //figure out direction
+  if (prev_clk == 1 && clk == 1 && dt == 1 && prev_dt == 0){
     return 1;
-  }else {
-    prev_state = -1;
+  }
+  if (prev_dt == 1 && dt == 1 && prev_clk == 0 && clk == 1){
     return -1;
   }
+  return 0;
 }
 int RotaryEncoder::get_button(){
   return 0;
