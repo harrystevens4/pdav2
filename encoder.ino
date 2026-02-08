@@ -32,5 +32,6 @@ int RotaryEncoder::get_direction() {
   return 0;
 }
 int RotaryEncoder::get_button(){
-  return 0;
+  int status = !digitalRead(this->sw);
+  return status;
 }
